@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+
+# Data and Models (Add these if your files are large)
+data/
+models/
+*.csv
+*.pkl
+*.joblib
+*.h5
+
+# IDE
+.vscode/
+.idea/
