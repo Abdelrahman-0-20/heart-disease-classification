@@ -37,9 +37,9 @@ def check(label, condition, detail=""):
         failures.append(label)
 
 
-# ------------------------------------------------------------------
+
 # 1. Data pipeline
-# ------------------------------------------------------------------
+ 
 df_missing, df = app.load_and_prepare_impl()
 print("data shape:", df.shape)
 print("target counts:", df[TARGET := "target"].value_counts().to_dict())
@@ -50,9 +50,9 @@ check("dataset has 303 rows x 14 columns", df.shape == (303, 14), str(df.shape))
 check("no missing values after imputation", int(df.isna().sum().sum()) == 0)
 check("target is binary", set(df["target"].unique()) <= {0, 1})
 
-# ------------------------------------------------------------------
+# 
 # 2. Training, tuning and evaluation
-# ------------------------------------------------------------------
+# 
 artifact = app.train_and_evaluate_impl(df)
 print(pd.DataFrame(artifact["metrics"]).round(3).to_string(index=False))
 print("best model:", artifact["best_name"])
@@ -74,9 +74,9 @@ check("saved model reloaded from disk",
       artifact_again["created_at"] == artifact["created_at"])
 check("best model handle is set", app.BEST_MODEL_PIPELINE is not None)
 
-# ------------------------------------------------------------------
+# 
 # 3. Prediction interface
-# ------------------------------------------------------------------
+# 
 sick_patient = {
     "age": 63, "sex": 1, "cp": 4, "trestbps": 145, "chol": 233, "fbs": 1,
     "restecg": 2, "thalach": 150, "exang": 0, "oldpeak": 2.3, "slope": 3,
@@ -99,9 +99,9 @@ check("threshold logic consistent",
       (result := app.predict_heart_disease(sick_patient))["prediction"]
       == int(result["probability"] >= app.PREDICTION_THRESHOLD))
 
-# ------------------------------------------------------------------
+# 
 # 4. Charts
-# ------------------------------------------------------------------
+# 
 figures = [
     app.plot_target_distribution(df),
     app.plot_correlation_heatmap(df),
@@ -115,9 +115,9 @@ for index, figure in enumerate(figures):
     size = os.path.getsize(path)
     check(f"chart {index} rendered", size > 5000, f"{size} bytes")
 
-# ------------------------------------------------------------------
+# 
 # 5. Full Streamlit script execution (AppTest)
-# ------------------------------------------------------------------
+# 
 from streamlit.testing.v1 import AppTest  # noqa: E402
 
 at = AppTest.from_file(os.path.join(PROJECT_ROOT, "app.py"), default_timeout=300)
@@ -139,9 +139,9 @@ print("prediction blocks:", blocks)
 check("prediction result displayed",
       any("Prediction:" in text and "Probability:" in text for text in blocks))
 
-# ------------------------------------------------------------------
+
 # Summary
-# ------------------------------------------------------------------
+ 
 print()
 if failures:
     print(f"SMOKE TEST FAILED: {failures}")
